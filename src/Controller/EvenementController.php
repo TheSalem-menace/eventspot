@@ -11,7 +11,6 @@ use App\Repository\TagEvenementRepository;
 use App\Service\EvenementManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -36,20 +35,21 @@ class EvenementController extends AbstractController
         TagEvenementRepository $tagRepo,
         PaginatorInterface $paginator
     ): Response {
-        $titre = $request->query->get('titre');
+        $titre     = $request->query->get('titre');
         $categorie = $request->query->get('categorie');
-        $ville = $request->query->get('ville');
-        $tagId = $request->query->getInt('tag') ?: null;
+        $ville     = $request->query->get('ville');
+        $tagId     = $request->query->getInt('tag') ?: null;
 
-        $query = $repo->findByFilters($titre, $categorie, $ville, $tagId);
-        $tags = $tagRepo->findAll();
+        // Pass Query object so KnpPaginator can add LIMIT/OFFSET efficiently
+        $query = $repo->findByFiltersQuery($titre, $categorie, $ville, $tagId);
+        $tags  = $tagRepo->findAll();
 
         $pagination = $paginator->paginate($query, $request->query->getInt('page', 1), 9);
 
         return $this->render('evenement/index.html.twig', [
             'pagination' => $pagination,
-            'tags' => $tags,
-            'filters' => compact('titre', 'categorie', 'ville', 'tagId'),
+            'tags'       => $tags,
+            'filters'    => compact('titre', 'categorie', 'ville', 'tagId'),
         ]);
     }
 
@@ -76,13 +76,11 @@ class EvenementController extends AbstractController
     #[Route('/{id}', name: 'app_evenement_show', requirements: ['id' => '\d+'])]
     public function show(Evenement $evenement, RequestStack $requestStack): Response
     {
-        // Store recently viewed in session
         $session = $requestStack->getSession();
-        $recent = $session->get('recent_events', []);
+        $recent  = $session->get('recent_events', []);
         if (!in_array($evenement->getId(), $recent)) {
             array_unshift($recent, $evenement->getId());
-            $recent = array_slice($recent, 0, 5);
-            $session->set('recent_events', $recent);
+            $session->set('recent_events', array_slice($recent, 0, 5));
         }
 
         $isInscrit = false;
@@ -91,9 +89,9 @@ class EvenementController extends AbstractController
         }
 
         return $this->render('evenement/show.html.twig', [
-            'evenement' => $evenement,
+            'evenement'       => $evenement,
             'placesRestantes' => $this->evenementManager->getPlacesRestantes($evenement),
-            'isInscrit' => $isInscrit,
+            'isInscrit'       => $isInscrit,
         ]);
     }
 
@@ -130,7 +128,7 @@ class EvenementController extends AbstractController
     public function inscription(Request $request, Evenement $evenement, MailerInterface $mailer): Response
     {
         if ($this->evenementManager->estInscrit($this->getUser(), $evenement)) {
-            $this->addFlash('warning', 'Vous êtes déjà inscrit à cet événement.');
+            $this->addFlash('warning', 'Vous êtes déjà inscrit(e) à cet événement.');
             return $this->redirectToRoute('app_evenement_show', ['id' => $evenement->getId()]);
         }
 
@@ -150,20 +148,19 @@ class EvenementController extends AbstractController
             $this->em->persist($inscription);
             $this->em->flush();
 
-            // Email confirmation
             try {
                 $email = (new Email())
                     ->from('noreply@eventspot.fr')
                     ->to($this->getUser()->getEmail())
                     ->subject('Confirmation d\'inscription — ' . $evenement->getTitre())
                     ->html($this->renderView('emails/confirmation_inscription.html.twig', [
-                        'evenement' => $evenement,
+                        'evenement'   => $evenement,
                         'inscription' => $inscription,
-                        'user' => $this->getUser(),
+                        'user'        => $this->getUser(),
                     ]));
                 $mailer->send($email);
             } catch (\Exception $e) {
-                // silently fail if mailer not configured
+                // Silently fail if mailer not configured
             }
 
             $this->addFlash('success', 'Inscription confirmée ! Un email de confirmation vous a été envoyé.');
@@ -172,7 +169,7 @@ class EvenementController extends AbstractController
 
         return $this->render('evenement/inscription.html.twig', [
             'evenement' => $evenement,
-            'form' => $form,
+            'form'      => $form,
         ]);
     }
 }

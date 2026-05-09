@@ -1,7 +1,17 @@
 api_platform:
-    title: Hello API Platform
-    version: 1.0.0
+    title: 'EventSpot API'
+    description: 'API de la plateforme EventSpot'
+    version: '1.0.0'
+    formats:
+        json: ['application/json']
+        jsonld: ['application/ld+json']
+    docs_formats:
+        jsonld: ['application/ld+json']
+        jsonopenapi: ['application/vnd.openapi+json']
+        html: ['text/html']
     defaults:
         stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
+    patch_formats:
+        json: ['application/merge-patch+json']

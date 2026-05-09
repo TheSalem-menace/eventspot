@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Evenement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 class EvenementRepository extends ServiceEntityRepository
@@ -26,7 +27,7 @@ class EvenementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByFilters(?string $titre = null, ?string $categorie = null, ?string $ville = null, ?int $tagId = null): array
+    public function findByFiltersQuery(?string $titre = null, ?string $categorie = null, ?string $ville = null, ?int $tagId = null): Query
     {
         $qb = $this->createQueryBuilder('e')
             ->leftJoin('e.lieu', 'l')
@@ -52,6 +53,12 @@ class EvenementRepository extends ServiceEntityRepository
                ->setParameter('tagId', $tagId);
         }
 
-        return $qb->getQuery()->getResult();
+        return $qb->getQuery();
+    }
+
+    // Keep array version for backward-compat
+    public function findByFilters(?string $titre = null, ?string $categorie = null, ?string $ville = null, ?int $tagId = null): array
+    {
+        return $this->findByFiltersQuery($titre, $categorie, $ville, $tagId)->getResult();
     }
 }

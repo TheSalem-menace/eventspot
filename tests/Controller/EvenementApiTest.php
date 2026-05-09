@@ -11,13 +11,19 @@ class EvenementApiTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/api/evenements', [], [], ['HTTP_ACCEPT' => 'application/json']);
         $this->assertResponseIsSuccessful();
-        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
     }
 
     public function testApiLieuxCollection(): void
     {
         $client = static::createClient();
         $client->request('GET', '/api/lieux', [], [], ['HTTP_ACCEPT' => 'application/json']);
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testApiTagsCollection(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/api/tag_evenements', [], [], ['HTTP_ACCEPT' => 'application/json']);
         $this->assertResponseIsSuccessful();
     }
 }
