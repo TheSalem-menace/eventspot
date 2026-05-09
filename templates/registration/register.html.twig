@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block title %}Créer un compte — EventSpot{% endblock %}
+{% block body %}
+<div class="container py-5" style="max-width:500px;">
+    <div class="card border-0 shadow">
+        <div class="card-body p-5">
+            <h2 class="fw-bold text-center mb-4">✍️ Créer un compte</h2>
+            {{ form_start(form) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.pseudo) }}
+            {{ form_row(form.plainPassword.first) }}
+            {{ form_row(form.plainPassword.second) }}
+            <button type="submit" class="btn btn-primary w-100 btn-lg mt-2">Créer mon compte</button>
+            {{ form_end(form) }}
+            <p class="text-center mt-3 mb-0">
+                Déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

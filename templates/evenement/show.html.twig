@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ evenement.titre }} — EventSpot{% endblock %}
+{% block body %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_evenement_index') }}">Événements</a></li>
+            <li class="breadcrumb-item active">{{ evenement.titre|slice(0,40) }}...</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            {% if evenement.imageName %}
+                <img src="{{ asset('uploads/evenements/' ~ evenement.imageName) }}"
+                     class="img-fluid rounded-3 mb-4 w-100" style="max-height:400px;object-fit:cover;"
+                     alt="{{ evenement.titre }}">
+            {% else %}
+                <div class="rounded-3 mb-4 d-flex align-items-center justify-content-center text-white"
+                     style="height:300px;background:linear-gradient(135deg,#1a1a2e,#0f3460);">
+                    <span style="font-size:5rem;">
+                        {% if evenement.categorie == 'conference' %}🎤
+                        {% elseif evenement.categorie == 'atelier' %}🔧
+                        {% elseif evenement.categorie == 'meetup' %}🤝
+                        {% elseif evenement.categorie == 'formation' %}📚
+                        {% else %}🎵{% endif %}
+                    </span>
+                </div>
+            {% endif %}
+
+            <div class="d-flex gap-2 flex-wrap mb-3">
+                <span class="badge bg-secondary fs-6">{{ evenement.categorie|capitalize }}</span>
+                {% for tag in evenement.tags %}
+                    <span class="badge fs-6" style="background:{{ tag.couleur }}">🏷️ {{ tag.nom }}</span>
+                {% endfor %}
+            </div>
+
+            <h1 class="fw-bold mb-3">{{ evenement.titre }}</h1>
+            <p class="lead">{{ evenement.description }}</p>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow border-0 sticky-top" style="top:80px;">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold mb-3">📌 Infos pratiques</h5>
+
+                    <p class="mb-2"><i class="fas fa-calendar text-primary me-2"></i>
+                        <strong>Début :</strong> {{ evenement.dateDebut|date('d/m/Y à H:i') }}</p>
+                    <p class="mb-2"><i class="fas fa-calendar-check text-primary me-2"></i>
+                        <strong>Fin :</strong> {{ evenement.dateFin|date('d/m/Y à H:i') }}</p>
+                    <p class="mb-2"><i class="fas fa-map-marker-alt text-danger me-2"></i>
+                        <strong>{{ evenement.lieu.nom }}</strong><br>
+                        <small class="text-muted ms-4">{{ evenement.lieu.adresse }}, {{ evenement.lieu.ville }}</small></p>
+
+                    <hr>
+                    <div class="mb-2">{{ evenement.prix|price_format|raw }}</div>
+                    <div class="mb-2">{{ capacity_badge(placesRestantes, evenement.capaciteMax)|raw }}</div>
+
+                    <div class="progress mb-1" style="height:12px;" title="{{ evenement.tauxRemplissage }}% rempli">
+                        <div class="progress-bar {{ evenement.tauxRemplissage >= 80 ? 'bg-danger' : (evenement.tauxRemplissage >= 50 ? 'bg-warning' : 'bg-success') }}"
+                             style="width:{{ evenement.tauxRemplissage }}%"></div>
+                    </div>
+                    <small class="text-muted">{{ evenement.nbInscrits }} / {{ evenement.capaciteMax }} participants</small>
+
+                    <hr>
+                    {% if app.user %}
+                        {% if isInscrit %}
+                            <div class="alert alert-success mb-0">✅ Vous êtes inscrit(e) à cet événement.</div>
+                        {% elseif placesRestantes > 0 %}
+                            <a href="{{ path('app_evenement_inscription', {id: evenement.id}) }}"
+                               class="btn btn-primary w-100 btn-lg">S'inscrire</a>
+                        {% else %}
+                            <button class="btn btn-secondary w-100 btn-lg" disabled>Complet</button>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-outline-primary w-100">
+                            🔑 Connectez-vous pour vous inscrire
+                        </a>
+                    {% endif %}
+
+                    {% if is_granted('ROLE_ORGANISATEUR') %}
+                    <hr>
+                    <div class="d-flex gap-2">
+                        <a href="{{ path('app_evenement_edit', {id: evenement.id}) }}"
+                           class="btn btn-outline-warning flex-grow-1">✏️ Modifier</a>
+                        <button type="button" class="btn btn-outline-danger" id="btn-delete">🗑️ Supprimer</button>
+                    </div>
+                    <form id="delete-form" action="{{ path('app_evenement_delete', {id: evenement.id}) }}" method="post" class="d-none">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script>
+document.getElementById('btn-delete')?.addEventListener('click', function() {
+    Swal.fire({
+        title: 'Supprimer cet événement ?',
+        text: 'Cette action est irréversible.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonText: 'Annuler',
+        confirmButtonText: 'Oui, supprimer',
+    }).then((result) => {
+        if (result.isConfirmed) document.getElementById('delete-form').submit();
+    });
+});
+</script>
+{% endblock %}

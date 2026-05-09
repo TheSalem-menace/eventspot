@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ lieu.nom }} — EventSpot{% endblock %}
+{% block body %}
+<div class="container py-4">
+    <h1 class="fw-bold mb-2">🏛️ {{ lieu.nom }}</h1>
+    <p><i class="fas fa-map-marker-alt me-2 text-danger"></i>{{ lieu.adresse }}, {{ lieu.ville }}</p>
+    <p><i class="fas fa-users me-2 text-primary"></i>Capacité : {{ lieu.capacite }} personnes</p>
+    <a href="{{ path('app_lieu_index') }}" class="btn btn-outline-secondary mt-3">← Retour aux lieux</a>
+</div>
+{% endblock %}

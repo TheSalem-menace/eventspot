@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ lieu ? 'Modifier' : 'Nouveau' }} lieu — EventSpot{% endblock %}
+{% block body %}
+<div class="container py-4" style="max-width:600px;">
+    <h1 class="fw-bold mb-4">{{ lieu ? '✏️ Modifier le lieu' : '🏛️ Nouveau lieu' }}</h1>
+    {{ form_start(form) }}
+    <div class="card border-0 shadow">
+        <div class="card-body p-4">
+            {{ form_row(form.nom) }}
+            {{ form_row(form.adresse) }}
+            {{ form_row(form.ville) }}
+            {{ form_row(form.capacite) }}
+        </div>
+        <div class="card-footer bg-transparent p-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+            <a href="{{ path('app_lieu_index') }}" class="btn btn-outline-secondary">Annuler</a>
+        </div>
+    </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

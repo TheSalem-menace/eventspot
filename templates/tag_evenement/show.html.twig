@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ tag.nom }} — EventSpot{% endblock %}
+{% block body %}
+<div class="container py-4">
+    <h1><span class="badge fs-3" style="background:{{ tag.couleur }}">🏷️ {{ tag.nom }}</span></h1>
+    <p class="text-muted">Couleur : {{ tag.couleur }}</p>
+    <a href="{{ path('app_tag_evenement_index') }}" class="btn btn-outline-secondary mt-3">← Retour</a>
+</div>
+{% endblock %}

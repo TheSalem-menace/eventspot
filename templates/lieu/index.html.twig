@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+{% block title %}Lieux — EventSpot{% endblock %}
+{% block body %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">🏛️ Lieux</h1>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_lieu_new') }}" class="btn btn-primary">➕ Nouveau lieu</a>
+        {% endif %}
+    </div>
+    <div class="row g-4">
+        {% for lieu in lieux %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold">{{ lieu.nom }}</h5>
+                    <p class="text-muted mb-1"><i class="fas fa-map-marker-alt me-1"></i>{{ lieu.adresse }}</p>
+                    <p class="text-muted mb-1"><i class="fas fa-city me-1"></i>{{ lieu.ville }}</p>
+                    <p class="mb-0"><span class="badge bg-primary">{{ lieu.capacite }} places max</span></p>
+                </div>
+                <div class="card-footer bg-transparent d-flex gap-2">
+                    <a href="{{ path('app_lieu_show', {id: lieu.id}) }}" class="btn btn-sm btn-outline-secondary">👁️</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_lieu_edit', {id: lieu.id}) }}" class="btn btn-sm btn-outline-warning">✏️</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-del-lieu"
+                                data-fid="del-lieu-{{ lieu.id }}">🗑️</button>
+                        <form id="del-lieu-{{ lieu.id }}" action="{{ path('app_lieu_delete', {id: lieu.id}) }}" method="post" class="d-none">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ lieu.id) }}">
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12"><div class="alert alert-info">Aucun lieu.</div></div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script>
+document.querySelectorAll('.btn-del-lieu').forEach(b => b.addEventListener('click', function() {
+    const fid = this.dataset.fid;
+    Swal.fire({title:'Supprimer ce lieu ?',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc3545',
+        cancelButtonText:'Annuler',confirmButtonText:'Supprimer'
+    }).then(r => { if(r.isConfirmed) document.getElementById(fid).submit(); });
+}));
+</script>
+{% endblock %}

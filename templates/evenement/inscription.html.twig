@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+{% block title %}S'inscrire — {{ evenement.titre }}{% endblock %}
+{% block body %}
+<div class="container py-4" style="max-width:600px;">
+    <h1 class="fw-bold mb-2">📝 Inscription</h1>
+    <h4 class="text-muted mb-4">{{ evenement.titre }}</h4>
+    <div class="card border-0 shadow mb-4">
+        <div class="card-body">
+            <p><i class="fas fa-calendar me-2 text-primary"></i>{{ evenement.dateDebut|date('d/m/Y à H:i') }}</p>
+            <p><i class="fas fa-map-marker-alt me-2 text-danger"></i>{{ evenement.lieu.nom }}, {{ evenement.lieu.ville }}</p>
+            <p>{{ evenement.prix|price_format|raw }} &nbsp; {{ capacity_badge(evenement.placesRestantes, evenement.capaciteMax)|raw }}</p>
+        </div>
+    </div>
+    {{ form_start(form) }}
+    <div class="card border-0 shadow">
+        <div class="card-body p-4">
+            {{ form_row(form.commentaire) }}
+        </div>
+        <div class="card-footer bg-transparent p-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary px-5">✅ Confirmer l'inscription</button>
+            <a href="{{ path('app_evenement_show', {id: evenement.id}) }}" class="btn btn-outline-secondary">Annuler</a>
+        </div>
+    </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

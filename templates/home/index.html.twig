@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+{% block title %}EventSpot — Découvrez les meilleurs événements{% endblock %}
+{% block body %}
+
+<div class="hero text-white py-5 mb-5">
+    <div class="container text-center py-3">
+        <h1 class="display-4 fw-bold">🎫 EventSpot</h1>
+        <p class="lead mb-4">Découvrez, participez et organisez les événements qui vous ressemblent</p>
+        <a href="{{ path('app_evenement_index') }}" class="btn btn-primary btn-lg me-2">
+            <i class="fas fa-search me-1"></i> Explorer les événements
+        </a>
+        {% if is_granted('ROLE_ORGANISATEUR') %}
+            <a href="{{ path('app_evenement_new') }}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-plus me-1"></i> Créer un événement
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container">
+    <h2 class="mb-4 fw-bold">🗓️ Prochains événements</h2>
+    {% if prochains is empty %}
+        <div class="alert alert-info">Aucun événement à venir pour le moment.</div>
+    {% else %}
+        <div class="row g-4">
+            {% for evenement in prochains %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 event-card border-0 shadow-sm">
+                    {% if evenement.imageName %}
+                        <img src="{{ asset('uploads/evenements/' ~ evenement.imageName) }}"
+                             class="card-img-top" style="height:180px;object-fit:cover;" alt="{{ evenement.titre }}">
+                    {% else %}
+                        <div class="card-img-top d-flex align-items-center justify-content-center"
+                             style="height:180px;background:linear-gradient(135deg,#1a1a2e,#0f3460);">
+                            <span style="font-size:3rem;">
+                                {% if evenement.categorie == 'conference' %}🎤
+                                {% elseif evenement.categorie == 'atelier' %}🔧
+                                {% elseif evenement.categorie == 'meetup' %}🤝
+                                {% elseif evenement.categorie == 'formation' %}📚
+                                {% else %}🎵{% endif %}
+                            </span>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex gap-1 mb-2">
+                            {% for tag in evenement.tags %}
+                                <span class="badge" style="background:{{ tag.couleur }}">{{ tag.nom }}</span>
+                            {% endfor %}
+                        </div>
+                        <h5 class="card-title fw-bold">{{ evenement.titre }}</h5>
+                        <p class="text-muted small mb-1">
+                            <i class="fas fa-calendar me-1"></i>{{ evenement.dateDebut|date('d/m/Y à H:i') }}
+                        </p>
+                        <p class="text-muted small mb-2">
+                            <i class="fas fa-map-marker-alt me-1"></i>{{ evenement.lieu.ville }}
+                        </p>
+                        <div class="mb-2">
+                            {{ evenement.prix|price_format|raw }}
+                            {{ capacity_badge(evenement.placesRestantes, evenement.capaciteMax)|raw }}
+                        </div>
+                        <div class="progress mb-2">
+                            <div class="progress-bar {{ evenement.tauxRemplissage >= 80 ? 'bg-danger' : (evenement.tauxRemplissage >= 50 ? 'bg-warning' : 'bg-success') }}"
+                                 style="width:{{ evenement.tauxRemplissage }}%"></div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pb-3">
+                        <a href="{{ path('app_evenement_show', {id: evenement.id}) }}" class="btn btn-primary w-100">
+                            Voir l'événement →
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ path('app_evenement_index') }}" class="btn btn-outline-primary btn-lg">
+                Voir tous les événements <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

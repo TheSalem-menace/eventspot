@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ tag ? 'Modifier' : 'Nouveau' }} tag — EventSpot{% endblock %}
+{% block body %}
+<div class="container py-4" style="max-width:500px;">
+    <h1 class="fw-bold mb-4">{{ tag ? '✏️ Modifier le tag' : '🏷️ Nouveau tag' }}</h1>
+    {{ form_start(form) }}
+    <div class="card border-0 shadow">
+        <div class="card-body p-4">
+            {{ form_row(form.nom) }}
+            {{ form_row(form.couleur) }}
+        </div>
+        <div class="card-footer bg-transparent p-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+            <a href="{{ path('app_tag_evenement_index') }}" class="btn btn-outline-secondary">Annuler</a>
+        </div>
+    </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

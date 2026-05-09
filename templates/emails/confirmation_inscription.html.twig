@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Confirmation d'inscription</title></head>
+<body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
+    <div style="background:#1a1a2e;color:white;padding:30px;border-radius:8px 8px 0 0;text-align:center;">
+        <h1>🎫 EventSpot</h1>
+        <h2>Inscription confirmée !</h2>
+    </div>
+    <div style="background:#f9f9f9;padding:30px;border-radius:0 0 8px 8px;border:1px solid #ddd;">
+        <p>Bonjour <strong>{{ user.pseudo }}</strong>,</p>
+        <p>Votre inscription à l'événement suivant a bien été confirmée :</p>
+        <div style="background:white;border-left:4px solid #0d6efd;padding:15px;margin:20px 0;border-radius:4px;">
+            <h3 style="margin:0 0 10px;">{{ evenement.titre }}</h3>
+            <p style="margin:5px 0;">📅 {{ evenement.dateDebut|date('d/m/Y à H:i') }}</p>
+            <p style="margin:5px 0;">📍 {{ evenement.lieu.nom }}, {{ evenement.lieu.ville }}</p>
+            <p style="margin:5px 0;">💶 {{ evenement.prix == 0 ? 'Gratuit' : evenement.prix ~ ' €' }}</p>
+        </div>
+        <p>Statut de votre inscription : <strong>{{ inscription.statut }}</strong></p>
+        {% if inscription.commentaire %}
+            <p>Votre commentaire : <em>{{ inscription.commentaire }}</em></p>
+        {% endif %}
+        <p>À bientôt sur EventSpot !</p>
+        <p style="color:#666;font-size:12px;margin-top:30px;">
+            Cet email a été envoyé automatiquement, merci de ne pas y répondre.
+        </p>
+    </div>
+</body>
+</html>
