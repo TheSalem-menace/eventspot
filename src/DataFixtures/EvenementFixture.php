@@ -3,6 +3,9 @@
 namespace App\DataFixtures;
 
 use App\Entity\Evenement;
+use App\Entity\Lieu;
+use App\Entity\TagEvenement;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -40,6 +43,15 @@ class EvenementFixture extends Fixture implements DependentFixtureInterface
         $faker = Factory::create('fr_FR');
         $now = new \DateTime();
 
+        // Get all lieux, tags, and users from database
+        $lieux = $manager->getRepository(Lieu::class)->findAll();
+        $tags = $manager->getRepository(TagEvenement::class)->findAll();
+        $users = $manager->getRepository(User::class)->findAll();
+
+        $organisateurs = array_filter($users, function($user) {
+            return in_array('ROLE_ORGANISATEUR', $user->getRoles()) || in_array('ROLE_ADMIN', $user->getRoles());
+        });
+
         foreach ($this->eventData as $i => $data) {
             $evenement = new Evenement();
             $evenement->setTitre($data[0]);
@@ -59,17 +71,24 @@ class EvenementFixture extends Fixture implements DependentFixtureInterface
             $evenement->setDateFin($dateDebut->modify('+4 hours'));
 
             // Lieu aléatoire parmi les 5
-            $evenement->setLieu($this->getReference(LieuFixtures::LIEU_REF . ($i % 5)));
+            if (!empty($lieux)) {
+                $evenement->setLieu($lieux[$i % count($lieux)]);
+            }
 
             // 1 ou 2 tags
-            $evenement->addTag($this->getReference(TagEvenementFixtures::TAG_REF . ($i % 8)));
-            if ($i % 3 === 0) {
-                $evenement->addTag($this->getReference(TagEvenementFixtures::TAG_REF . (($i + 1) % 8)));
+            if (!empty($tags)) {
+                $evenement->addTag($tags[$i % count($tags)]);
+                if ($i % 3 === 0 && count($tags) > 1) {
+                    $evenement->addTag($tags[($i + 1) % count($tags)]);
+                }
             }
 
             // Organisateur
-            $orgaIndex = $i % 2;
-            $evenement->setOrganisateur($this->getReference(UserFixtures::ORGA_REF . $orgaIndex));
+            if (!empty($organisateurs)) {
+                $orgaIndex = $i % count($organisateurs);
+                $evenement->setOrganisateur($organisateurs[$orgaIndex]);
+            }
+            
             $evenement->setStatut('publie');
 
             $manager->persist($evenement);
