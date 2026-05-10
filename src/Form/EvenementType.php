@@ -22,8 +22,20 @@ class EvenementType extends AbstractType
         $builder
             ->add('titre', TextType::class, ['label' => 'Titre', 'attr' => ['class' => 'form-control']])
             ->add('description', TextareaType::class, ['label' => 'Description', 'attr' => ['rows' => 5, 'class' => 'form-control']])
-            ->add('dateDebut', DateTimeType::class, ['label' => 'Date de début', 'widget' => 'single_text', 'attr' => ['class' => 'form-control']])
-            ->add('dateFin', DateTimeType::class, ['label' => 'Date de fin', 'widget' => 'single_text', 'attr' => ['class' => 'form-control']])
+            ->add('dateDebut', DateTimeType::class, [
+                'label' => 'Date de début', 
+                'widget' => 'single_text', 
+                'attr' => ['class' => 'form-control'],
+                'input' => 'datetime_immutable',
+                'input_format' => 'Y-m-d\TH:i',
+            ])
+            ->add('dateFin', DateTimeType::class, [
+                'label' => 'Date de fin', 
+                'widget' => 'single_text', 
+                'attr' => ['class' => 'form-control'],
+                'input' => 'datetime_immutable',
+                'input_format' => 'Y-m-d\TH:i',
+            ])
             ->add('lieu', EntityType::class, [
                 'label' => 'Lieu',
                 'class' => Lieu::class,
@@ -52,6 +64,17 @@ class EvenementType extends AbstractType
                 'expanded' => true,
                 'by_reference' => false,
                 'required' => false,
+            ])
+            ->add('statut', ChoiceType::class, [
+                'label' => 'Statut',
+                'choices' => [
+                    'Brouillon' => 'brouillon',
+                    'Publié' => 'publie',
+                    'Complet' => 'complet',
+                    'Annulé' => 'annule',
+                ],
+                'data' => 'brouillon',
+                'attr' => ['class' => 'form-select'],
             ])
         ;
     }
