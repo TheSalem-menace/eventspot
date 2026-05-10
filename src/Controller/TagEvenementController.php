@@ -15,6 +15,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/tags')]
 class TagEvenementController extends AbstractController
 {
+    public function __construct(private EntityManagerInterface $em) {}
+
     #[Route('', name: 'app_tag_evenement_index')]
     public function index(TagEvenementRepository $repo): Response
     {
@@ -23,14 +25,14 @@ class TagEvenementController extends AbstractController
 
     #[Route('/nouveau', name: 'app_tag_evenement_new')]
     #[IsGranted('ROLE_ADMIN')]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request): Response
     {
         $tag = new TagEvenement();
         $form = $this->createForm(TagType::class, $tag);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($tag);
-            $em->flush();
+            $this->em->persist($tag);
+            $this->em->flush();
             $this->addFlash('success', 'Tag créé !');
             return $this->redirectToRoute('app_tag_evenement_index');
         }
@@ -45,12 +47,12 @@ class TagEvenementController extends AbstractController
 
     #[Route('/{id}/modifier', name: 'app_tag_evenement_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function edit(Request $request, TagEvenement $tag, EntityManagerInterface $em): Response
+    public function edit(Request $request, TagEvenement $tag): Response
     {
         $form = $this->createForm(TagType::class, $tag);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
+            $this->em->flush();
             $this->addFlash('success', 'Tag modifié !');
             return $this->redirectToRoute('app_tag_evenement_index');
         }
@@ -59,11 +61,11 @@ class TagEvenementController extends AbstractController
 
     #[Route('/{id}/supprimer', name: 'app_tag_evenement_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function delete(Request $request, TagEvenement $tag, EntityManagerInterface $em): Response
+    public function delete(Request $request, TagEvenement $tag): Response
     {
         if ($this->isCsrfTokenValid('delete' . $tag->getId(), $request->getPayload()->getString('_token'))) {
-            $em->remove($tag);
-            $em->flush();
+            $this->em->remove($tag);
+            $this->em->flush();
             $this->addFlash('success', 'Tag supprimé.');
         }
         return $this->redirectToRoute('app_tag_evenement_index');
