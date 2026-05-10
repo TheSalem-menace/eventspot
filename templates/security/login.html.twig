@@ -11,11 +11,11 @@
             <form method="post">
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Email</label>
-                    <input type="email" name="email" class="form-control" value="{{ last_username }}" autofocus required>
+                    <input type="email" name="_username" class="form-control" value="{{ last_username }}" autofocus required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Mot de passe</label>
-                    <input type="password" name="password" class="form-control" required>
+                    <input type="password" name="_password" class="form-control" required>
                 </div>
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                 <button type="submit" class="btn btn-primary w-100 btn-lg">Se connecter</button>
