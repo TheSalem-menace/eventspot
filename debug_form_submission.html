@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EventSpot Form Debug</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>🔍 Event Creation Form Debug</h1>
+        
+        <div class="alert alert-danger">
+            <h5>❌ Current Issue: "data.password" validation error</h5>
+            <p>This error suggests the wrong form/entity is being validated.</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h3>🔧 Debug Steps</h3>
+                <ol>
+                    <li><strong>Open browser dev tools (F12)</strong></li>
+                    <li><strong>Go to Network tab</strong></li>
+                    <li><strong>Submit the event form</strong></li>
+                    <li><strong>Check the form data being sent</strong></li>
+                    <li><strong>Look for any password fields</strong></li>
+                </ol>
+                
+                <h5>What to check:</h5>
+                <ul>
+                    <li>❓ Form action URL</li>
+                    <li>❓ Form method (POST)</li>
+                    <li>❓ Form field names</li>
+                    <li>❓ CSRF token presence</li>
+                    <li>❓ Any password fields in form data</li>
+                </ul>
+            </div>
+            
+            <div class="col-md-6">
+                <h3>🎯 Expected Form Fields</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Evenement Form should have:</h6>
+                        <ul class="list-unstyled">
+                            <li>✅ evenement[titre]</li>
+                            <li>✅ evenement[description]</li>
+                            <li>✅ evenement[dateDebut]</li>
+                            <li>✅ evenement[dateFin]</li>
+                            <li>✅ evenement[lieu]</li>
+                            <li>✅ evenement[capaciteMax]</li>
+                            <li>✅ evenement[prix]</li>
+                            <li>✅ evenement[categorie]</li>
+                            <li>✅ evenement[statut]</li>
+                            <li>✅ evenement[tags][]</li>
+                        </ul>
+                        
+                        <h6 class="text-danger">Should NOT have:</h6>
+                        <ul class="list-unstyled text-danger">
+                            <li>❌ user[password]</li>
+                            <li>❌ registration_form[password]</li>
+                            <li>❌ Any password fields</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3>🔍 Possible Causes</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card border-warning">
+                            <div class="card-body">
+                                <h6>1. Wrong Template</h6>
+                                <p>Registration form being used instead of event form</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-warning">
+                            <div class="card-body">
+                                <h6>2. Form Inheritance</h6>
+                                <p>Event form extending wrong base form</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-warning">
+                            <div class="card-body">
+                                <h6>3. Entity Mix-up</h6>
+                                <p>User entity being validated instead of Evenement</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3>🚀 Quick Test</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Test the form now:</h5>
+                        <ol>
+                            <li><a href="http://localhost:8000/login" target="_blank" class="btn btn-primary btn-sm">Login as Organizer</a></li>
+                            <li><a href="http://localhost:8000/evenements/nouveau" target="_blank" class="btn btn-success btn-sm">Open Event Form</a></li>
+                            <li>Fill in ALL fields</li>
+                            <li>Submit and watch Network tab</li>
+                            <li>Report the exact form data being sent</li>
+                        </ol>
+                        
+                        <div class="alert alert-info">
+                            <strong>Important:</strong> Look at the "Payload" or "Form Data" section in the Network tab when you submit the form. This will show exactly what's being sent to the server.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-success">
+                    <h5>✅ What We've Fixed So Far:</h5>
+                    <ul>
+                        <li>Added missing 'statut' field to EvenementType</li>
+                        <li>Added 'statut' field to template</li>
+                        <li>Cleared cache</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

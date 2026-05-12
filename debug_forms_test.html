@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EventSpot Forms Debug</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>🐛 EventSpot Forms Debug Test</h1>
+        
+        <div class="alert alert-info">
+            <h5>📋 Current Status:</h5>
+            <ul>
+                <li>✅ Server running on localhost:8000</li>
+                <li>✅ Database populated with test data</li>
+                <li>❌ Event creation not working</li>
+                <li>❌ Inscription not working</li>
+            </ul>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h3>🎪 Test Event Creation</h3>
+                <div class="alert alert-warning">
+                    <strong>Required:</strong> Must be logged in as organizer
+                </div>
+                
+                <h5>Organizer Accounts:</h5>
+                <ul>
+                    <li>organisateur0@eventspot.fr / password123</li>
+                    <li>organisateur1@eventspot.fr / password123</li>
+                </ul>
+                
+                <h5>Test Steps:</h5>
+                <ol>
+                    <li><a href="http://localhost:8000/login" target="_blank">Login as organizer</a></li>
+                    <li>Go to <a href="http://localhost:8000/evenements/nouveau" target="_blank">Create Event</a></li>
+                    <li>Fill form and submit</li>
+                    <li>Check browser console (F12) for errors</li>
+                </ol>
+                
+                <div class="mt-3">
+                    <a href="http://localhost:8000/login" target="_blank" class="btn btn-primary">🔐 Login Now</a>
+                    <a href="http://localhost:8000/evenements/nouveau" target="_blank" class="btn btn-success">📝 Create Event</a>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <h3>👤 Test Inscription</h3>
+                <div class="alert alert-warning">
+                    <strong>Required:</strong> Must be logged in as regular user
+                </div>
+                
+                <h5>User Accounts:</h5>
+                <ul>
+                    <li>user0@eventspot.fr / password123</li>
+                    <li>user1@eventspot.fr / password123</li>
+                    <li>user2@eventspot.fr / password123</li>
+                </ul>
+                
+                <h5>Test Steps:</h5>
+                <ol>
+                    <li><a href="http://localhost:8000/login" target="_blank">Login as user</a></li>
+                    <li>Browse to <a href="http://localhost:8000/evenements" target="_blank">Events List</a></li>
+                    <li>Click on any event</li>
+                    <li>Click "S'inscrire" button</li>
+                    <li>Fill form and submit</li>
+                    <li>Check browser console (F12) for errors</li>
+                </ol>
+                
+                <div class="mt-3">
+                    <a href="http://localhost:8000/login" target="_blank" class="btn btn-primary">🔐 Login Now</a>
+                    <a href="http://localhost:8000/evenements" target="_blank" class="btn btn-info">📅 Browse Events</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3>🔍 Debug Checklist</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Browser Console Check (F12):</h5>
+                        <ul>
+                            <li>❓ Any JavaScript errors?</li>
+                            <li>❓ Network requests failing?</li>
+                            <li>❓ CSRF token errors?</li>
+                            <li>❓ Form validation errors?</li>
+                        </ul>
+                        
+                        <h5>Common Issues:</h5>
+                        <ul>
+                            <li>⚠️ Not logged in with correct role</li>
+                            <li>⚠️ Form validation failing</li>
+                            <li>⚠️ CSRF token missing/invalid</li>
+                            <li>⚠️ Database constraint errors</li>
+                            <li>⚠️ Email sending failures (silently ignored)</li>
+                        </ul>
+                        
+                        <h5>Manual Form Test:</h5>
+                        <p>If web forms don't work, try submitting via cURL or Postman to isolate the issue.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="alert alert-success">
+                    <h5>✅ Working Features:</h5>
+                    <ul>
+                        <li>Homepage loads correctly</li>
+                        <li>Event list displays</li>
+                        <li>Login system working</li>
+                        <li>Database populated</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

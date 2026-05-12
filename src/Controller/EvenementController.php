@@ -138,12 +138,12 @@ class EvenementController extends AbstractController
         }
 
         $inscription = new Inscription();
+        $inscription->setEvenement($evenement);
+        $inscription->setParticipant($this->getUser());
         $form = $this->createForm(InscriptionType::class, $inscription);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $inscription->setEvenement($evenement);
-            $inscription->setParticipant($this->getUser());
             $inscription->setStatut('confirmee');
             $this->em->persist($inscription);
             $this->em->flush();
@@ -158,9 +158,11 @@ class EvenementController extends AbstractController
                         'inscription' => $inscription,
                         'user'        => $this->getUser(),
                     ]));
-                $mailer->send($email);
+                $result = $mailer->send($email);
+                error_log('Email sent successfully to: ' . $this->getUser()->getEmail());
             } catch (\Exception $e) {
-                // Silently fail if mailer not configured
+                error_log('Email sending failed: ' . $e->getMessage());
+                $this->addFlash('warning', 'Inscription enregistrée mais email non envoyé: ' . $e->getMessage());
             }
 
             $this->addFlash('success', 'Inscription confirmée ! Un email de confirmation vous a été envoyé.');

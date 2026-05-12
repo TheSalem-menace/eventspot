@@ -6,6 +6,7 @@
         <div class="card-body p-5">
             <h2 class="fw-bold text-center mb-4">✍️ Créer un compte</h2>
             {{ form_start(form) }}
+            {{ form_errors(form) }}
             {{ form_row(form.email) }}
             {{ form_row(form.pseudo) }}
             {{ form_row(form.plainPassword.first) }}
